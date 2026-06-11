@@ -230,7 +230,7 @@ export default function ComponentsShowcase() {
     <div className="min-h-screen bg-background text-foreground">
       <main className="container max-w-6xl mx-auto">
         <div className="space-y-2 justify-between flex">
-          <h2 className="text-3xl font-bold tracking-tight mb-6">
+          <h2 className="text-3xl font-semibold tracking-tight mb-6">
             Shadcn/ui Component Library
           </h2>
           <Button variant="outline" size="icon" onClick={toggleTheme}>
@@ -1221,7 +1221,7 @@ export default function ComponentsShowcase() {
                   <Label>Toggle</Label>
                   <div className="flex gap-2">
                     <Toggle aria-label="Toggle italic">
-                      <span className="font-bold">B</span>
+                      <span className="font-semibold">B</span>
                     </Toggle>
                     <Toggle aria-label="Toggle italic">
                       <span className="italic">I</span>
@@ -1236,7 +1236,7 @@ export default function ComponentsShowcase() {
                   <Label>Toggle Group</Label>
                   <ToggleGroup type="multiple">
                     <ToggleGroupItem value="bold" aria-label="Toggle bold">
-                      <span className="font-bold">B</span>
+                      <span className="font-semibold">B</span>
                     </ToggleGroupItem>
                     <ToggleGroupItem value="italic" aria-label="Toggle italic">
                       <span className="italic">I</span>
