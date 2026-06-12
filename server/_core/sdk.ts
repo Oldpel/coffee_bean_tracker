@@ -35,26 +35,46 @@ export class SDKServer {
   }
 
   async register(username: string, password: string, name?: string) {
-    const existing = await db.getUserByUsername(username);
-    if (existing) {
-      throw new Error("用户名已存在");
+    try {
+      const existing = await db.getUserByUsername(username);
+      if (existing) {
+        throw new Error("用户名已存在");
+      }
+      const passwordHash = await this.hashPassword(password);
+      await db.createUser({ username, passwordHash, name: name || username });
+      const user = await db.getUserByUsername(username);
+      if (!user) {
+        throw new Error("注册失败，请重试");
+      }
+      return user;
+    } catch (error: any) {
+      if (error.message === "用户名已存在" || error.message === "注册失败，请重试") {
+        throw error;
+      }
+      console.error("[Auth] Register error:", error.message || error);
+      throw new Error("注册失败，请稍后重试");
     }
-    const passwordHash = await this.hashPassword(password);
-    await db.createUser({ username, passwordHash, name: name || username });
-    return db.getUserByUsername(username);
   }
 
   async login(username: string, password: string): Promise<User> {
-    const user = await db.getUserByUsername(username);
-    if (!user) {
-      throw new Error("用户名或密码错误");
+    try {
+      const user = await db.getUserByUsername(username);
+      if (!user) {
+        throw new Error("用户名或密码错误");
+      }
+      const valid = await this.verifyPassword(password, user.passwordHash);
+      if (!valid) {
+        throw new Error("用户名或密码错误");
+      }
+      await db.updateUserLastSignedIn(user.id);
+      return user;
+    } catch (error: any) {
+      if (error.message === "用户名或密码错误") {
+        throw error;
+      }
+      console.error("[Auth] Login error:", error.message || error);
+      throw new Error("登录失败，请稍后重试");
     }
-    const valid = await this.verifyPassword(password, user.passwordHash);
-    if (!valid) {
-      throw new Error("用户名或密码错误");
-    }
-    await db.updateUserLastSignedIn(user.id);
-    return user;
   }
 
   async createSessionToken(
