@@ -10,10 +10,12 @@ import CoffeeBeansPage from "./pages/CoffeeBeansPage";
 import CoffeeBeanDetail from "./pages/CoffeeBeanDetail";
 import BrewingRecordsPage from "./pages/BrewingRecordsPage";
 import BrewingSuggestionsPage from "./pages/BrewingSuggestionsPage";
+import LoginPage from "./pages/LoginPage";
 
 function Router() {
   return (
     <Switch>
+      <Route path={"/login"} component={LoginPage} />
       <Route path={"/"} component={Home} />
       <Route path={"/dashboard"} component={Dashboard} />
       <Route path={"/beans"} component={CoffeeBeansPage} />
@@ -21,7 +23,6 @@ function Router() {
       <Route path={"/beans/:id/suggestions"} component={BrewingSuggestionsPage} />
       <Route path={"/records"} component={BrewingRecordsPage} />
       <Route path={"/404"} component={NotFound} />
-      {/* Final fallback route */}
       <Route component={NotFound} />
     </Switch>
   );
@@ -32,7 +33,6 @@ function App() {
     <ErrorBoundary>
       <ThemeProvider
         defaultTheme="light"
-        // switchable
       >
         <TooltipProvider>
           <Toaster />

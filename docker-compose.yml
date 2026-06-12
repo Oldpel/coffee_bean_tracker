@@ -1,0 +1,39 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=mysql://root:coffee123@db:3306/coffee_bean_tracker
+      - JWT_SECRET=change-this-to-a-random-secret-string
+      - LLM_API_URL=https://api.openai.com/v1
+      - LLM_API_KEY=sk-your-api-key
+      - LLM_MODEL=gpt-4o-mini
+      - NODE_ENV=production
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - uploads:/app/uploads
+    restart: unless-stopped
+
+  db:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=coffee123
+      - MYSQL_DATABASE=coffee_bean_tracker
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./drizzle/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+  uploads:

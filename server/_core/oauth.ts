@@ -1,53 +1,85 @@
 import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 import type { Express, Request, Response } from "express";
-import * as db from "../db";
 import { getSessionCookieOptions } from "./cookies";
 import { sdk } from "./sdk";
 
-function getQueryParam(req: Request, key: string): string | undefined {
-  const value = req.query[key];
-  return typeof value === "string" ? value : undefined;
-}
+export function registerAuthRoutes(app: Express) {
+  app.post("/api/auth/register", async (req: Request, res: Response) => {
+    const { username, password, name } = req.body as {
+      username: string;
+      password: string;
+      name?: string;
+    };
 
-export function registerOAuthRoutes(app: Express) {
-  app.get("/api/oauth/callback", async (req: Request, res: Response) => {
-    const code = getQueryParam(req, "code");
-    const state = getQueryParam(req, "state");
+    if (!username || !password) {
+      res.status(400).json({ error: "用户名和密码不能为空" });
+      return;
+    }
 
-    if (!code || !state) {
-      res.status(400).json({ error: "code and state are required" });
+    if (username.length < 3 || username.length > 32) {
+      res.status(400).json({ error: "用户名长度需在 3-32 之间" });
+      return;
+    }
+
+    if (password.length < 6) {
+      res.status(400).json({ error: "密码长度至少 6 位" });
       return;
     }
 
     try {
-      const tokenResponse = await sdk.exchangeCodeForToken(code, state);
-      const userInfo = await sdk.getUserInfo(tokenResponse.accessToken);
-
-      if (!userInfo.openId) {
-        res.status(400).json({ error: "openId missing from user info" });
+      const user = await sdk.register(username, password, name);
+      if (!user) {
+        res.status(500).json({ error: "注册失败" });
         return;
       }
 
-      await db.upsertUser({
-        openId: userInfo.openId,
-        name: userInfo.name || null,
-        email: userInfo.email ?? null,
-        loginMethod: userInfo.loginMethod ?? userInfo.platform ?? null,
-        lastSignedIn: new Date(),
-      });
-
-      const sessionToken = await sdk.createSessionToken(userInfo.openId, {
-        name: userInfo.name || "",
+      const sessionToken = await sdk.createSessionToken(user.id, user.username, {
         expiresInMs: ONE_YEAR_MS,
       });
 
       const cookieOptions = getSessionCookieOptions(req);
       res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
 
-      res.redirect(302, "/");
-    } catch (error) {
-      console.error("[OAuth] Callback failed", error);
-      res.status(500).json({ error: "OAuth callback failed" });
+      res.json({
+        id: user.id,
+        username: user.username,
+        name: user.name,
+        role: user.role,
+      });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message || "注册失败" });
+    }
+  });
+
+  app.post("/api/auth/login", async (req: Request, res: Response) => {
+    const { username, password } = req.body as {
+      username: string;
+      password: string;
+    };
+
+    if (!username || !password) {
+      res.status(400).json({ error: "用户名和密码不能为空" });
+      return;
+    }
+
+    try {
+      const user = await sdk.login(username, password);
+
+      const sessionToken = await sdk.createSessionToken(user.id, user.username, {
+        expiresInMs: ONE_YEAR_MS,
+      });
+
+      const cookieOptions = getSessionCookieOptions(req);
+      res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
+
+      res.json({
+        id: user.id,
+        username: user.username,
+        name: user.name,
+        role: user.role,
+      });
+    } catch (error: any) {
+      res.status(401).json({ error: error.message || "登录失败" });
     }
   });
 }

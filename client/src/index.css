@@ -42,51 +42,33 @@
 }
 
 :root {
-  /* 极简北欧风格：浅冷灰色背景 + 粉蓝色和浅玫瑰粉点缀 */
-  --primary: oklch(0.55 0.15 240);        /* 粉蓝色 */
-  --primary-foreground: oklch(0.98 0 0); /* 白色 */
+  --primary: oklch(0.55 0.15 240);
+  --primary-foreground: oklch(0.98 0 0);
   --sidebar-primary: oklch(0.55 0.15 240);
   --sidebar-primary-foreground: oklch(0.98 0 0);
-  
-  /* 浅玫瑰粉作为次要颜色 */
-  --secondary: oklch(0.75 0.08 330);      /* 浅玫瑰粉 */
+  --secondary: oklch(0.75 0.08 330);
   --secondary-foreground: oklch(0.235 0.015 65);
-  
-  /* 图表颜色 */
-  --chart-1: oklch(0.55 0.15 240);        /* 粉蓝色 */
-  --chart-2: oklch(0.75 0.08 330);        /* 浅玫瑰粉 */
-  --chart-3: oklch(0.65 0.12 250);        /* 深粉蓝 */
-  --chart-4: oklch(0.70 0.10 320);        /* 深玫瑰粉 */
-  --chart-5: oklch(0.50 0.18 235);        /* 更深粉蓝 */
-  
+  --chart-1: oklch(0.55 0.15 240);
+  --chart-2: oklch(0.75 0.08 330);
+  --chart-3: oklch(0.65 0.12 250);
+  --chart-4: oklch(0.70 0.10 320);
+  --chart-5: oklch(0.50 0.18 235);
   --radius: 0.65rem;
-  
-  /* 浅冷灰色背景 + 充足负空间 */
-  --background: oklch(0.96 0.003 260);    /* 浅冷灰色 */
-  --foreground: oklch(0.235 0.015 65);    /* 深灰色文本 */
-  --card: oklch(1 0 0);                   /* 纯白卡片 */
+  --background: oklch(0.96 0.003 260);
+  --foreground: oklch(0.235 0.015 65);
+  --card: oklch(1 0 0);
   --card-foreground: oklch(0.235 0.015 65);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.235 0.015 65);
-  
-  /* 柔和的灰色 */
   --muted: oklch(0.92 0.003 260);
   --muted-foreground: oklch(0.552 0.016 285.938);
-  
-  /* 强调色 */
-  --accent: oklch(0.55 0.15 240);         /* 粉蓝色 */
+  --accent: oklch(0.55 0.15 240);
   --accent-foreground: oklch(0.98 0 0);
-  
-  /* 销毁性操作 */
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0 0);
-  
-  /* 边框和输入 */
   --border: oklch(0.90 0.004 260);
   --input: oklch(0.96 0.003 260);
   --ring: oklch(0.55 0.15 240);
-  
-  /* 侧边栏 */
   --sidebar: oklch(1 0 0);
   --sidebar-foreground: oklch(0.235 0.015 65);
   --sidebar-accent: oklch(0.96 0.003 260);
@@ -127,193 +109,188 @@
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: var(--border);
   }
 
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--background);
+    color: var(--foreground);
   }
 
-  /* 极简北欧风格：粗体黑色无衬线字体 */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold text-foreground;
+    font-weight: 600;
+    color: var(--foreground);
   }
 
-  h1 {
-    @apply text-4xl font-semibold;
-  }
+  h1 { font-size: 2.25rem; line-height: 2.5rem; font-weight: 600; }
+  h2 { font-size: 1.875rem; line-height: 2.25rem; font-weight: 600; }
+  h3 { font-size: 1.5rem; line-height: 2rem; font-weight: 600; }
+  h4 { font-size: 1.25rem; line-height: 1.75rem; font-weight: 600; }
 
-  h2 {
-    @apply text-3xl font-semibold;
-  }
-
-  h3 {
-    @apply text-2xl font-semibold;
-  }
-
-  h4 {
-    @apply text-xl font-semibold;
-  }
-
-  /* 副标题使用细体字形成现代层级对比 */
   .subtitle {
-    @apply text-base font-light text-muted-foreground;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 300;
+    color: var(--muted-foreground);
   }
 
-  /* 几何装饰元素 */
-  .geometric-accent {
-    @apply absolute pointer-events-none;
-  }
+  .geometric-accent { position: absolute; pointer-events: none; }
+  .geometric-accent-blue { background-color: color-mix(in oklch, var(--primary) 10%, transparent); }
+  .geometric-accent-pink { background-color: color-mix(in oklch, var(--secondary) 10%, transparent); }
 
-  .geometric-accent-blue {
-    @apply bg-primary/10;
-  }
-
-  .geometric-accent-pink {
-    @apply bg-secondary/10;
-  }
-
-  /* 容器和布局 */
   .container {
-    @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 80rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 
-  /* 卡片样式 */
+  @media (min-width: 640px) {
+    .container { padding-left: 1.5rem; padding-right: 1.5rem; }
+  }
+
+  @media (min-width: 1024px) {
+    .container { padding-left: 2rem; padding-right: 2rem; }
+  }
+
   .card-base {
-    @apply bg-card text-card-foreground rounded-lg shadow-sm border border-border;
+    background-color: var(--card);
+    color: var(--card-foreground);
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    border: 1px solid var(--border);
   }
 
-  /* 按钮基础样式 */
-  button {
-    @apply transition-all duration-200;
-  }
+  button { transition: all 0.2s; }
+  button:active { transform: scale(0.95); }
 
-  button:active {
-    @apply scale-95;
-  }
-
-  /* 输入框基础样式 */
   input, textarea, select {
-    @apply bg-input text-foreground border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary;
+    background-color: var(--input);
+    color: var(--foreground);
+    border: 1px solid var(--border);
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.75rem;
   }
 
-  /* 链接样式 */
-  a {
-    @apply text-primary hover:text-primary/80 transition-colors;
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--ring);
   }
+
+  a {
+    color: var(--primary);
+    transition: color 0.15s;
+  }
+
+  a:hover { color: color-mix(in oklch, var(--primary) 80%, transparent); }
 }
 
 @layer components {
-  /* 极简卡片 */
   .card-minimal {
-    @apply bg-card text-card-foreground rounded-lg border border-border p-6 shadow-sm hover:shadow-md transition-shadow;
+    background-color: var(--card);
+    color: var(--card-foreground);
+    border-radius: 0.5rem;
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    transition: box-shadow 0.2s;
   }
 
-  /* 极简按钮 */
+  .card-minimal:hover { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+
   .btn-minimal {
-    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200 border border-transparent;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    border: 1px solid transparent;
   }
 
   .btn-minimal-primary {
-    @apply bg-primary text-primary-foreground hover:bg-primary/90 active:scale-95 font-medium;
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    font-weight: 500;
   }
+
+  .btn-minimal-primary:hover { opacity: 0.9; }
+  .btn-minimal-primary:active { transform: scale(0.95); }
 
   .btn-minimal-secondary {
-    @apply bg-secondary text-secondary-foreground hover:bg-secondary/90 active:scale-95 font-medium;
+    background-color: var(--secondary);
+    color: var(--secondary-foreground);
+    font-weight: 500;
   }
+
+  .btn-minimal-secondary:hover { opacity: 0.9; }
+  .btn-minimal-secondary:active { transform: scale(0.95); }
 
   .btn-minimal-outline {
-    @apply border-border bg-transparent text-foreground hover:bg-muted active:scale-95 font-medium;
+    border-color: var(--border);
+    background-color: transparent;
+    color: var(--foreground);
+    font-weight: 500;
   }
 
-  /* 极简输入框 */
+  .btn-minimal-outline:hover { background-color: var(--muted); }
+  .btn-minimal-outline:active { transform: scale(0.95); }
+
   .input-minimal {
-    @apply bg-input text-foreground border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent;
+    background-color: var(--input);
+    color: var(--foreground);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
   }
 
-  /* 极简标签 */
+  .input-minimal:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--ring);
+    border-color: transparent;
+  }
+
   .badge-minimal {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-muted text-muted-foreground;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    background-color: var(--muted);
+    color: var(--muted-foreground);
   }
 
-  .badge-primary {
-    @apply bg-primary/10 text-primary;
+  .badge-primary { background-color: color-mix(in oklch, var(--primary) 10%, transparent); color: var(--primary); }
+  .badge-secondary { background-color: color-mix(in oklch, var(--secondary) 10%, transparent); color: var(--secondary); }
+
+  .divider-minimal { height: 1px; background-color: var(--border); }
+
+  .grid-minimal { display: grid; gap: 1.5rem; }
+  .grid-minimal-2 { display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
+  .grid-minimal-3 { display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
+
+  @media (min-width: 768px) {
+    .grid-minimal-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid-minimal-3 { grid-template-columns: repeat(2, 1fr); }
   }
 
-  .badge-secondary {
-    @apply bg-secondary/10 text-secondary;
+  @media (min-width: 1024px) {
+    .grid-minimal-3 { grid-template-columns: repeat(3, 1fr); }
   }
 
-  /* 极简分隔线 */
-  .divider-minimal {
-    @apply h-px bg-border;
-  }
-
-  /* 极简网格 */
-  .grid-minimal {
-    @apply grid gap-6;
-  }
-
-  .grid-minimal-2 {
-    @apply grid-minimal grid-cols-1 md:grid-cols-2;
-  }
-
-  .grid-minimal-3 {
-    @apply grid-minimal grid-cols-1 md:grid-cols-2 lg:grid-cols-3;
-  }
-
-  /* 极简空状态 */
-  .empty-state {
-    @apply flex flex-col items-center justify-center py-12 text-center;
-  }
-
-  .empty-state-icon {
-    @apply text-4xl text-muted-foreground mb-4;
-  }
-
-  .empty-state-title {
-    @apply text-lg font-semibold text-foreground mb-2;
-  }
-
-  .empty-state-description {
-    @apply text-sm text-muted-foreground;
-  }
+  .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 0; text-align: center; }
+  .empty-state-icon { font-size: 2.25rem; color: var(--muted-foreground); margin-bottom: 1rem; }
+  .empty-state-title { font-size: 1.125rem; font-weight: 600; color: var(--foreground); margin-bottom: 0.5rem; }
+  .empty-state-description { font-size: 0.875rem; color: var(--muted-foreground); }
 }
 
 @layer utilities {
-  /* 负空间工具类 */
-  .space-generous {
-    @apply space-y-8;
-  }
-
-  .space-generous-x {
-    @apply space-x-8;
-  }
-
-  /* 文本工具类 */
-  .text-subtle {
-    @apply text-muted-foreground;
-  }
-
-  .text-emphasis {
-    @apply font-bold text-foreground;
-  }
-
-  /* 背景工具类 */
-  .bg-subtle {
-    @apply bg-muted/30;
-  }
-
-  /* 几何装饰 */
-  .decoration-circle {
-    @apply rounded-full;
-  }
-
-  .decoration-square {
-    @apply rounded-none;
-  }
-
-  .decoration-rounded {
-    @apply rounded-2xl;
-  }
+  .space-generous > * + * { margin-top: 2rem; }
+  .space-generous-x > * + * { margin-left: 2rem; }
+  .text-subtle { color: var(--muted-foreground); }
+  .text-emphasis { font-weight: 700; color: var(--foreground); }
+  .bg-subtle { background-color: color-mix(in oklch, var(--muted) 30%, transparent); }
+  .decoration-circle { border-radius: 9999px; }
+  .decoration-square { border-radius: 0; }
+  .decoration-rounded { border-radius: 1rem; }
 }

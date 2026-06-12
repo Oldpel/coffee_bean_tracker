@@ -1,6 +1,5 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { getLoginUrl } from "@/const";
 import { Coffee, TrendingUp, Zap } from "lucide-react";
 import { useLocation } from "wouter";
 
@@ -24,7 +23,6 @@ export default function Home() {
   if (isAuthenticated) {
     return (
       <div className="min-h-screen bg-background">
-        {/* 导航栏 */}
         <nav className="border-b border-border bg-card sticky top-0 z-50">
           <div className="container flex items-center justify-between h-16">
             <div className="flex items-center gap-2">
@@ -57,16 +55,13 @@ export default function Home() {
           </div>
         </nav>
 
-        {/* 主内容 */}
         <main className="container py-12">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-semibold text-foreground mb-4">欢迎回来</h2>
             <p className="text-lg text-muted-foreground">开始管理你的咖啡豆养豆之旅</p>
           </div>
 
-          {/* 快速操作卡片 */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            {/* 咖啡豆管理 */}
             <div className="card-minimal cursor-pointer hover:shadow-lg transition-all" onClick={() => setLocation("/beans")}>
               <div className="flex items-start gap-4">
                 <div className="p-3 bg-primary/10 rounded-lg">
@@ -79,7 +74,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* 冲煮记录 */}
             <div className="card-minimal cursor-pointer hover:shadow-lg transition-all" onClick={() => setLocation("/records")}>
               <div className="flex items-start gap-4">
                 <div className="p-3 bg-secondary/10 rounded-lg">
@@ -92,7 +86,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* AI 建议 */}
             <div className="card-minimal cursor-pointer hover:shadow-lg transition-all" onClick={() => setLocation("/dashboard")}>
               <div className="flex items-start gap-4">
                 <div className="p-3 bg-primary/10 rounded-lg">
@@ -106,7 +99,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* 几何装饰元素 */}
           <div className="relative h-32 rounded-2xl overflow-hidden bg-gradient-to-r from-primary/5 to-secondary/5 border border-border">
             <div className="absolute top-4 right-8 w-24 h-24 bg-primary/10 rounded-full blur-3xl"></div>
             <div className="absolute bottom-4 left-8 w-32 h-32 bg-secondary/10 rounded-full blur-3xl"></div>
@@ -123,23 +115,23 @@ export default function Home() {
     );
   }
 
-  // 未登录状态 - 登陆页面
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* 导航栏 */}
       <nav className="border-b border-border bg-card">
         <div className="container flex items-center justify-between h-16">
           <div className="flex items-center gap-2">
             <Coffee className="w-6 h-6 text-primary" />
             <h1 className="text-xl font-semibold text-foreground">咖啡豆养豆记录</h1>
           </div>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" onClick={() => setLocation("/login")}>登录</Button>
+            <Button onClick={() => setLocation("/login")}>注册</Button>
+          </div>
         </div>
       </nav>
 
-      {/* 主内容 */}
       <main className="flex-1 container flex flex-col items-center justify-center py-12">
         <div className="max-w-md w-full text-center space-generous">
-          {/* Logo 区域 */}
           <div className="mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
               <Coffee className="w-8 h-8 text-primary" />
@@ -148,7 +140,6 @@ export default function Home() {
             <p className="subtitle">为咖啡爱好者打造的养豆管理助手</p>
           </div>
 
-          {/* 特性列表 */}
           <div className="space-y-4 mb-8 text-left">
             <div className="flex items-start gap-3">
               <Coffee className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
@@ -173,15 +164,13 @@ export default function Home() {
             </div>
           </div>
 
-          {/* 登陆按钮 */}
           <Button
-            onClick={() => window.location.href = getLoginUrl()}
+            onClick={() => setLocation("/login")}
             className="w-full btn-minimal-primary py-3 text-base font-semibold"
           >
-            使用 Manus 账户登陆
+            登录 / 注册
           </Button>
 
-          {/* 几何装饰 */}
           <div className="relative mt-12 h-24">
             <div className="absolute top-0 left-1/4 w-16 h-16 bg-primary/5 rounded-full blur-2xl"></div>
             <div className="absolute bottom-0 right-1/4 w-20 h-20 bg-secondary/5 rounded-full blur-2xl"></div>
@@ -189,7 +178,6 @@ export default function Home() {
         </div>
       </main>
 
-      {/* 页脚 */}
       <footer className="border-t border-border bg-card py-6">
         <div className="container text-center text-sm text-muted-foreground">
           <p>© 2026 咖啡豆养豆记录 · 为咖啡爱好者打造</p>

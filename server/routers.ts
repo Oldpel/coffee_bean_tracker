@@ -20,14 +20,11 @@ export const appRouter = router({
     }),
   }),
 
-  // ============ Coffee Beans Router ============
   coffeeBeans: router({
-    // 获取用户的所有咖啡豆
     list: protectedProcedure.query(async ({ ctx }) => {
       return db.getUserCoffeeBeans(ctx.user.id);
     }),
 
-    // 获取单个咖啡豆详情
     getById: protectedProcedure
       .input(z.object({ id: z.number() }))
       .query(async ({ ctx, input }) => {
@@ -38,7 +35,6 @@ export const appRouter = router({
         return bean;
       }),
 
-    // 创建新咖啡豆
     create: protectedProcedure
       .input(
         z.object({
@@ -61,7 +57,6 @@ export const appRouter = router({
         return bean;
       }),
 
-    // 更新咖啡豆
     update: protectedProcedure
       .input(
         z.object({
@@ -83,7 +78,6 @@ export const appRouter = router({
         return bean;
       }),
 
-    // 删除咖啡豆
     delete: protectedProcedure
       .input(z.object({ id: z.number() }))
       .mutation(async ({ ctx, input }) => {
@@ -95,23 +89,19 @@ export const appRouter = router({
       }),
   }),
 
-  // ============ Brewing Records Router ============
   brewingRecords: router({
-    // 获取某个咖啡豆的所有冲煮记录
     listByBean: protectedProcedure
       .input(z.object({ beanId: z.number() }))
       .query(async ({ ctx, input }) => {
         return db.getBeanBrewingRecords(input.beanId, ctx.user.id);
       }),
 
-    // 获取用户最近的冲煮记录
     getRecent: protectedProcedure
       .input(z.object({ limit: z.number().default(5) }))
       .query(async ({ ctx, input }) => {
         return db.getUserRecentBrewingRecords(ctx.user.id, input.limit);
       }),
 
-    // 获取单条冲煮记录
     getById: protectedProcedure
       .input(z.object({ id: z.number() }))
       .query(async ({ ctx, input }) => {
@@ -122,7 +112,6 @@ export const appRouter = router({
         return record;
       }),
 
-    // 创建冲煮记录
     create: protectedProcedure
       .input(
         z.object({
@@ -139,7 +128,6 @@ export const appRouter = router({
         })
       )
       .mutation(async ({ ctx, input }) => {
-        // 验证豆子所有权
         const bean = await db.getCoffeeBeanById(input.beanId, ctx.user.id);
         if (!bean) {
           throw new TRPCError({ code: "NOT_FOUND", message: "Coffee bean not found" });
@@ -158,7 +146,6 @@ export const appRouter = router({
         return record;
       }),
 
-    // 更新冲煮记录
     update: protectedProcedure
       .input(
         z.object({
@@ -188,7 +175,6 @@ export const appRouter = router({
         return record;
       }),
 
-    // 删除冲煮记录
     delete: protectedProcedure
       .input(z.object({ id: z.number() }))
       .mutation(async ({ ctx, input }) => {
@@ -200,9 +186,7 @@ export const appRouter = router({
       }),
   }),
 
-  // ============ AI Brewing Suggestions Router ============
   brewingSuggestions: router({
-    // 根据咖啡豆属性生成冲煮建议
     generate: protectedProcedure
       .input(
         z.object({
@@ -214,13 +198,11 @@ export const appRouter = router({
       )
       .mutation(async ({ ctx, input }) => {
         try {
-          // 验证豆子所有权
           const bean = await db.getCoffeeBeanById(input.beanId, ctx.user.id);
           if (!bean) {
             throw new TRPCError({ code: "NOT_FOUND", message: "Coffee bean not found" });
           }
 
-          // 构建 LLM 提示词
           const roastLevel = input.roastLevel || bean.roastLevel || "未指定";
           const processingMethod = input.processingMethod || bean.processingMethod || "未指定";
           const origin = input.origin || bean.origin || "未指定";
@@ -259,11 +241,9 @@ export const appRouter = router({
             ],
           });
 
-          // 解析 LLM 响应
           const messageContent = response.choices[0]?.message?.content;
           const content = typeof messageContent === 'string' ? messageContent : '';
-          
-          // 提取 JSON 部分
+
           const jsonMatch = content.match(/\{[\s\S]*\}/);
           if (!jsonMatch || !content) {
             throw new Error("无效的响应格式");

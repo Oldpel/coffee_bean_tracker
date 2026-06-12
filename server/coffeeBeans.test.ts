@@ -7,10 +7,10 @@ type AuthenticatedUser = NonNullable<TrpcContext["user"]>;
 function createAuthContext(userId: number = 1): { ctx: TrpcContext } {
   const user: AuthenticatedUser = {
     id: userId,
-    openId: `test-user-${userId}`,
+    username: `test-user-${userId}`,
+    passwordHash: "$2a$10$hash",
     email: `test${userId}@example.com`,
     name: `Test User ${userId}`,
-    loginMethod: "manus",
     role: "user",
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -54,7 +54,6 @@ describe("Coffee Beans Router", () => {
     const { ctx } = createAuthContext();
     const caller = appRouter.createCaller(ctx);
 
-    // Create a bean first
     await caller.coffeeBeans.create({
       name: "Test Bean 1",
       origin: "Colombia",
@@ -75,7 +74,6 @@ describe("Coffee Beans Router", () => {
     const caller1 = appRouter.createCaller(ctx1);
     const caller2 = appRouter.createCaller(ctx2);
 
-    // User 1 creates a bean
     const bean = await caller1.coffeeBeans.create({
       name: "User 1 Bean",
       origin: "Kenya",
@@ -84,7 +82,6 @@ describe("Coffee Beans Router", () => {
       purchaseDate: new Date(),
     });
 
-    // User 2 tries to access it
     try {
       await caller2.coffeeBeans.getById({ id: bean.id });
       expect.fail("Should not allow access to other user's bean");
@@ -99,7 +96,6 @@ describe("Brewing Records Router", () => {
     const { ctx } = createAuthContext();
     const caller = appRouter.createCaller(ctx);
 
-    // First create a coffee bean
     const bean = await caller.coffeeBeans.create({
       name: "Test Bean for Brewing",
       origin: "Brazil",
@@ -108,7 +104,6 @@ describe("Brewing Records Router", () => {
       purchaseDate: new Date(),
     });
 
-    // Then create a brewing record
     const record = await caller.brewingRecords.create({
       beanId: bean.id,
       brewDate: new Date(),
@@ -131,7 +126,6 @@ describe("Brewing Records Router", () => {
     const { ctx } = createAuthContext();
     const caller = appRouter.createCaller(ctx);
 
-    // Create a bean
     const bean = await caller.coffeeBeans.create({
       name: "Test Bean",
       origin: "Vietnam",
@@ -140,7 +134,6 @@ describe("Brewing Records Router", () => {
       purchaseDate: new Date(),
     });
 
-    // Create multiple brewing records
     await caller.brewingRecords.create({
       beanId: bean.id,
       brewDate: new Date(),
@@ -166,7 +159,6 @@ describe("Brewing Records Router", () => {
     const caller1 = appRouter.createCaller(ctx1);
     const caller2 = appRouter.createCaller(ctx2);
 
-    // User 1 creates a bean
     const bean = await caller1.coffeeBeans.create({
       name: "User 1 Bean",
       origin: "Peru",
@@ -175,7 +167,6 @@ describe("Brewing Records Router", () => {
       purchaseDate: new Date(),
     });
 
-    // User 2 tries to create a record for it
     try {
       await caller2.brewingRecords.create({
         beanId: bean.id,
